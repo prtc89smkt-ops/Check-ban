@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050505" />
+  <meta
+    name="description"
+    content="Free WhatsApp Ban Checker — check any number for free."
+  />
+
+  <link rel="icon" type="image/jpg" href="/images/dev-cifer.jpg" />
+
+  <title>WhatsApp Ban Checker — Dev Cifer</title>
+
+  <!-- Cloudflare Turnstile -->
+  <script
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    async
+    defer
+  ></script>
+
+  <style>
+    :root {
+      --background: 0 0% 2%;
+      --foreground: 0 0% 98%;
+
+      --card: 0 0% 5%;
+      --card-foreground: 0 0% 98%;
+
+      --border: 0 0% 15%;
+      --muted: 0 0% 60%;
+      --muted-foreground: 0 0% 65%;
+
+      --primary: 0 0% 98%;
+      --primary-foreground: 0 0% 5%;
+
+      /* Strong red */
+      --destructive: 0 100% 50%;
+
+      --success: 142 70% 45%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(
+          circle at top,
+          rgba(255, 0, 0, 0.06),
+          transparent 35%
+        ),
+        #050505;
+      color: hsl(var(--foreground));
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .container {
+      width: min(920px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 1px solid hsl(var(--border));
+      background: rgba(5, 5, 5, 0.88);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .brand-name {
+      font-size: 17px;
+    }
+
+    .brand-sub {
+      color: hsl(var(--muted-foreground));
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    main {
+      padding: 70px 0 50px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 38px;
+    }
+
+    .hero-logo {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 0, 0, 0.25);
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.08);
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 7vw, 58px);
+      line-height: 1;
+      letter-spacing: -0.055em;
+    }
+
+    .hero p {
+      color: hsl(var(--muted-foreground));
+      max-width: 600px;
+      margin: 18px auto 0;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .card {
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.025),
+          rgba(255, 255, 255, 0.008)
+        ),
+        hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.35),
+        inset 0 1px rgba(255, 255, 255, 0.025);
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 13px;
+      font-weight: 700;
+      color: hsl(var(--muted-foreground));
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      height: 54px;
+      padding: 0 16px;
+      color: hsl(var(--foreground));
+      background: #080808;
+      border: 1px solid hsl(var(--border));
+      border-radius: 13px;
+      outline: none;
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(255, 255, 255, 0.35);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+    }
+
+    input::placeholder {
+      color: #555;
+    }
+
+    .captcha-box {
+      display: flex;
+      justify-content: center;
+      min-height: 66px;
+      margin: 20px 0;
+    }
+
+    .check-btn {
+      width: 100%;
+      height: 54px;
+      border: 0;
+      border-radius: 13px;
+      background: #f5f5f5;
+      color: #050505;
+      font-weight: 800;
+      cursor: pointer;
+      transition:
+        transform 0.15s,
+        opacity 0.15s,
+        box-shadow 0.2s;
+    }
+
+    .check-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.08);
+    }
+
+    .check-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .check-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .loading {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+    }
+
+    .spinner {
+      width: 17px;
+      height: 17px;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #result {
+      display: none;
+      margin-top: 24px;
+    }
+
+    .status-banner {
+      border: 1px solid hsl(var(--border));
+      border-radius: 17px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #080808;
+      transition: all 0.25s ease;
+    }
+
+    .status-banner.banned {
+      border-color: hsl(var(--destructive) / 0.7);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255, 0, 0, 0.12),
+          rgba(0, 0, 0, 0.96) 68%
+        ),
+        #070000;
+      box-shadow:
+        inset 0 0 35px rgba(255, 0, 0, 0.04),
+        0 0 28px rgba(255, 0, 0, 0.1);
+    }
+
+    .status-banner.safe {
+      border-color: hsl(var(--success) / 0.45);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(34, 197, 94, 0.08),
+          rgba(0, 0, 0, 0.96) 68%
+        ),
+        #050806;
+    }
+
+    .s-icon {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 21px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .s-icon.banned {
+      color: hsl(var(--destructive));
+      background: rgba(255, 0, 0, 0.1);
+      box-shadow: 0 0 18px rgba(255, 0, 0, 0.08);
+    }
+
+    .s-icon.safe {
+      color: hsl(var(--success));
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .status-title {
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .status-description {
+      margin-top: 4px;
+      color: hsl(var(--muted-foreground));
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .result-card {
+      margin-top: 14px;
+      overflow: hidden;
+      border: 1px solid hsl(var(--border));
+      border-radius: 17px;
+      background: #070707;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 15px 17px;
+      border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .result-row:last-child {
+      border-bottom: 0;
+    }
+
+    .row-k {
+      color: hsl(var(--muted-foreground));
+      font-size: 13px;
+    }
+
+    .row-v {
+      font-weight: 700;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .row-v.banned {
+      color: hsl(var(--destructive));
+      text-shadow: 0 0 14px rgba(255, 0, 0, 0.2);
+    }
+
+    .row-v.safe {
+      color: hsl(var(--success));
+    }
+
+    .error {
+      display: none;
+      margin-top: 15px;
+      padding: 13px 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 0, 0, 0.35);
+      background: rgba(255, 0, 0, 0.07);
+      color: #ff5555;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .info {
+      margin-top: 20px;
+      color: #555;
+      font-size: 12px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    footer {
+      border-top: 1px solid hsl(var(--border));
+      padding: 28px 0;
+      margin-top: 35px;
+      color: #555;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    footer a {
+      color: #aaa;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        padding-top: 45px;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      .hero-logo {
+        width: 72px;
+        height: 72px;
+      }
+
+      .status-banner {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <img src="/images/dev-cifer.jpg" alt="Dev Cifer" />
+        <div>
+          <div class="brand-name">Dev Cifer</div>
+          <div class="brand-sub">WhatsApp Ban Checker</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <section class="hero">
+        <img
+          class="hero-logo"
+          src="/images/dev-cifer.jpg"
+          alt="Dev Cifer"
+        />
+
+        <h1>WhatsApp Ban Checker</h1>
+
+        <p>
+          Check whether a WhatsApp number is banned using the official
+          verification process.
+        </p>
+      </section>
+
+      <section class="card">
+
+        <label class="label" for="phone">
+          WhatsApp phone number
+        </label>
+
+        <div class="input-wrap">
+          <input
+            id="phone"
+            type="text"
+            inputmode="tel"
+            autocomplete="tel"
+            placeholder="+225 0700000000"
+            maxlength="30"
+          />
+        </div>
+
+        <!-- Cloudflare Turnstile -->
+        <div class="captcha-box">
+          <div
+            class="cf-turnstile"
+            data-sitekey="0x4AAAAAADnq7lsJ0xLVIRQ9"
+            data-theme="dark"
+            data-callback="turnstileSuccess"
+            data-expired-callback="turnstileExpired"
+            data-error-callback="turnstileError"
+          ></div>
+        </div>
+
+        <button
+          id="checkBtn"
+          class="check-btn"
+          type="button"
+          disabled
+        >
+          <span id="checkText">Check</span>
+
+          <span id="loading" class="loading">
+            <span class="spinner"></span>
+            Checking...
+          </span>
+        </button>
+
+        <div id="error" class="error"></div>
+
+        <div id="result"></div>
+
+        <div class="info">
+          Your number is sent securely to the checker endpoint.
+          A valid Turnstile verification is required before checking.
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      Dev Cifer © 2026 ·
+      <a
+        href="https://t.me/devcifer"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Telegram
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    let turnstileToken = "";
+    let checking = false;
+
+    const phoneInput = document.getElementById("phone");
+    const checkBtn = document.getElementById("checkBtn");
+    const checkText = document.getElementById("checkText");
+    const loading = document.getElementById("loading");
+    const result = document.getElementById("result");
+    const errorBox = document.getElementById("error");
+
+    /*
+     * Cloudflare Turnstile callback
+     */
+    function turnstileSuccess(token) {
+      turnstileToken = token;
+      updateButton();
+    }
+
+    function turnstileExpired() {
+      turnstileToken = "";
+      updateButton();
+    }
+
+    function turnstileError() {
+      turnstileToken = "";
+      updateButton();
+
+      showError(
+        "CAPTCHA verification failed. Please complete the CAPTCHA again."
+      );
+    }
+
+    function updateButton() {
+      checkBtn.disabled =
+        checking ||
+        !phoneInput.value.trim() ||
+        !turnstileToken;
+    }
+
+    phoneInput.addEventListener("input", () => {
+      updateButton();
+    });
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.style.display = "block";
+    }
+
+    function hideError() {
+      errorBox.textContent = "";
+      errorBox.style.display = "none";
+    }
+
+    function setLoading(state) {
+      checking = state;
+
+      if (state) {
+        checkText.style.display = "none";
+        loading.style.display = "flex";
+      } else {
+        checkText.style.display = "inline";
+        loading.style.display = "none";
+      }
+
+      updateButton();
+    }
+
+    function isTrue(value) {
+      if (value === true) return true;
+      if (value === 1) return true;
+
+      if (typeof value === "string") {
+        const v = value.toLowerCase().trim();
+
+        return (
+          v === "true" ||
+          v === "1" ||
+          v === "yes" ||
+          v === "banned" ||
+          v === "ban"
+        );
+      }
+
+      return false;
+    }
+
+    function detectBanned(data) {
+      if (!data || typeof data !== "object") {
+        return false;
+      }
+
+      return (
+        isTrue(data.banned) ||
+        isTrue(data.mod_ban) ||
+        isTrue(data.is_banned) ||
+        isTrue(data.isBanned) ||
+        isTrue(data.ban)
+      );
+    }
+
+    function getValue(data, keys, fallback = "—") {
+      for (const key of keys) {
+        if (
+          data &&
+          data[key] !== undefined &&
+          data[key] !== null &&
+          data[key] !== ""
+        ) {
+          return data[key];
+        }
+      }
+
+      return fallback;
+    }
+
+    function render(data) {
+      const banned = detectBanned(data);
+
+      result.style.display = "block";
+
+      if (banned) {
+        result.innerHTML = `
+          <div class="status-banner banned">
+            <div class="s-icon banned">!</div>
+
+            <div>
+              <div class="status-title">
+                This number ban by cifer
+              </div>
+
+              <div class="status-description">
+                The checked number has been detected as banned.
+              </div>
+            </div>
+          </div>
+
+          <div class="result-card">
+
+            <div class="result-row">
+              <div class="row-k">Number</div>
+              <div class="row-v">
+                ${escapeHtml(
+                  getValue(data, [
+                    "number",
+                    "phone",
+                    "phone_number",
+                    "msisdn"
+                  ], phoneInput.value.trim())
+                )}
+              </div>
+            </div>
+
+            <div class="result-row">
+              <div class="row-k">Status</div>
+              <div class="row-v banned">
+                BANNED
+              </div>
+            </div>
+
+          </div>
+        `;
+      } else {
+        result.innerHTML = `
+          <div class="status-banner safe">
+            <div class="s-icon safe">✓</div>
+
+            <div>
+              <div class="status-title">
+                Number is not banned
+              </div>
+
+              <div class="status-description">
+                No ban was detected for this number.
+              </div>
+            </div>
+          </div>
+
+          <div class="result-card">
+
+            <div class="result-row">
+              <div class="row-k">Number</div>
+              <div class="row-v">
+                ${escapeHtml(
+                  getValue(data, [
+                    "number",
+                    "phone",
+                    "phone_number",
+                    "msisdn"
+                  ], phoneInput.value.trim())
+                )}
+              </div>
+            </div>
+
+            <div class="result-row">
+              <div class="row-k">Status</div>
+              <div class="row-v safe">
+                NOT BANNED
+              </div>
+            </div>
+
+          </div>
+        `;
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    async function checkNumber() {
+      const number = phoneInput.value.trim();
+
+      if (!number) {
+        showError("Please enter a WhatsApp number.");
+        return;
+      }
+
+      if (!turnstileToken) {
+        showError("Please complete the CAPTCHA first.");
+        return;
+      }
+
+      hideError();
+      result.style.display = "none";
+      setLoading(true);
+
+      try {
+        const response = await fetch("/check-numberr2", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            number: number,
+            phone: number,
+            "cf-turnstile-response": turnstileToken
+          })
+        });
+
+        let data;
+
+        const contentType =
+          response.headers.get("content-type") || "";
+
+        if (contentType.includes("application/json")) {
+          data = await response.json();
+        } else {
+          const text = await response.text();
+
+          try {
+            data = JSON.parse(text);
+          } catch {
+            data = {
+              result: text
+            };
+          }
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            data?.message ||
+            data?.error ||
+            `Request failed (${response.status})`
+          );
+        }
+
+        render(data);
+
+      } catch (err) {
+        showError(
+          err?.message ||
+          "Unable to check this number. Please try again."
+        );
+      } finally {
+        setLoading(false);
+
+        /*
+         * Turnstile tokens are normally single-use.
+         * Reset after every check so a fresh token is required.
+         */
+        turnstileToken = "";
+
+        if (window.turnstile) {
+          try {
+            turnstile.reset();
+          } catch (e) {
+            console.warn("Turnstile reset failed:", e);
+          }
+        }
+
+        updateButton();
+      }
+    }
+
+    checkBtn.addEventListener("click", checkNumber);
+
+    phoneInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !checkBtn.disabled) {
+        checkNumber();
+      }
+    });
+
+    updateButton();
+  </script>
+
+</body>
+</html>
