@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THE SHELBY SOCIETY</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #181818;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+
+    header h1 {
+      font-size: 24px;
+      letter-spacing: 2px;
+    }
+
+    .search {
+      padding: 15px;
+      background: #181818;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 25px;
+      background: #292929;
+      color: white;
+      outline: none;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      padding: 12px;
+      background: #181818;
+    }
+
+    .tabs button {
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 14px;
+      padding: 8px 15px;
+    }
+
+    .tabs button.active {
+      color: white;
+      border-bottom: 2px solid white;
+    }
+
+    .chat {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 16px;
+      border-bottom: 1px solid #292929;
+      cursor: pointer;
+    }
+
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .chat-info {
+      flex: 1;
+    }
+
+    .chat-info h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .chat-info p {
+      color: #999;
+      font-size: 13px;
+    }
+
+    .time {
+      color: #777;
+      font-size: 11px;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      padding: 15px;
+      text-align: center;
+      background: #181818;
+      color: #777;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🎭 THE SHELBY SOCIETY</h1>
+  </header>
+
+  <div class="search">
+    <input type="text" placeholder="Rechercher...">
+  </div>
+
+  <div class="tabs">
+    <button class="active">Toutes</button>
+    <button>Non lues</button>
+    <button>Groupes</button>
+  </div>
+
+  <main>
+
+    <div class="chat">
+      <div class="avatar">TS</div>
+      <div class="chat-info">
+        <h3>THE SHELBY SOCIETY</h3>
+        <p>Bienvenue dans la société 🎭</p>
+      </div>
+      <div class="time">00:36</div>
+    </div>
+
+    <div class="chat">
+      <div class="avatar">🔥</div>
+      <div class="chat-info">
+        <h3>Shelby Family</h3>
+        <p>Bienvenue dans le groupe</p>
+      </div>
+      <div class="time">Hier</div>
+    </div>
+
+    <div class="chat">
+      <div class="avatar">👑</div>
+      <div class="chat-info">
+        <h3>Administrateurs</h3>
+        <p>Messages importants</p>
+      </div>
+      <div class="time">Hier</div>
+    </div>
+
+  </main>
+
+  <footer>
+    THE SHELBY SOCIETY © 2026
+  </footer>
+
+</body>
+</html>
