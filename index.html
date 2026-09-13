@@ -1,665 +1,1370 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#050505" />
-    <meta name="description" content="Free WhatsApp Ban Checker — check any number for free, forever." />
-    <link rel="icon" type="image/jpg" href="../images/image.jpg" />
-    <meta property="og:title" content="Free Ban Check — Dev Cifer" />
-    <meta property="og:description" content="Check any WhatsApp number for free, forever." />
-    <meta property="og:image" content="https://baron0.com/images/image.jpg" />
-    <title>
-      Free Ban Check — Dev Cifer
-    </title>
-    <style>
-      /* Design tokens mirrored from the panel (panel/frontend/src/index.css). */
-  :root {
-    --background: 0 0% 1.5%;
-    --foreground: 45 13% 91%;
-    --card: 0 0% 3.3%;
-    --secondary: 0 0% 7%;
-    --muted-foreground: 40 4% 50%;
-    --destructive: 0 43% 48%;
-    --success: 103 18% 59%;
-    --border: 45 6% 16%;
-    --input: 45 6% 19%;
-    --ring: 45 13% 82%;
-  }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050000" />
+  <meta name="description" content="Free WhatsApp Ban Checker — check any number for free, forever." />
 
-  * { box-sizing: border-box; margin: 0; padding: 0; border-color: hsl(var(--border)); }
+  <link rel="icon" type="image/jpeg" href="/images/dev-cifer.jpg" />
 
-  html {
-    color-scheme: dark;
-    min-width: 320px;
-    background: hsl(var(--background));
-  }
+  <meta property="og:title" content="Free Ban Check — Dev Cifer" />
+  <meta property="og:description" content="Check any WhatsApp number for free, forever." />
+  <meta property="og:image" content="/images/dev-cifer.jpg" />
 
-  body {
-    min-width: 320px;
-    min-height: 100vh;
-    overflow-x: hidden;
-    color: hsl(var(--foreground));
-    font-family: Arial, Helvetica, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    background:
-      radial-gradient(ellipse 80% 50% at 52% -18%, rgba(255,255,255,0.06), transparent 64%),
-      radial-gradient(ellipse 45% 36% at 100% 38%, rgba(255,255,255,0.022), transparent 72%),
-      linear-gradient(180deg, #050505 0%, #020202 53%, #050505 100%);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-  }
+  <title>Free Ban Check — Dev Cifer</title>
 
-  body::before {
-    content: &#34;&#34;; position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: .34;
-    background:
-      repeating-linear-gradient(90deg, transparent 0, transparent calc(12.5vw - 1px), rgba(255,255,255,0.022) calc(12.5vw - 1px), rgba(255,255,255,0.022) 12.5vw),
-      repeating-linear-gradient(0deg, transparent 0, transparent 120px, rgba(255,255,255,0.011) 120px, rgba(255,255,255,0.011) 121px);
-  }
+  <style>
+    :root {
+      --background: 0 0% 1%;
+      --foreground: 0 0% 94%;
+      --card: 0 0% 3%;
+      --secondary: 0 0% 6%;
+      --muted-foreground: 0 0% 52%;
+      --destructive: 0 85% 52%;
+      --success: 120 55% 48%;
+      --border: 0 55% 15%;
+      --input: 0 45% 18%;
+      --ring: 0 85% 52%;
+      --red: #e50914;
+      --red-dark: #700008;
+      --black: #030303;
+    }
 
-  body::after {
-    content: &#34;&#34;; position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: .048;
-    mix-blend-mode: soft-light;
-    background: repeating-radial-gradient(circle at 19% 31%,
-      rgba(255,255,255,0.92) 0, rgba(255,255,255,0.92) .4px, transparent .7px, transparent 4px);
-  }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border-color: hsl(var(--border));
+    }
 
-  h1, h2, h3 {
-    font-family: Georgia, &#34;Times New Roman&#34;, serif;
-    font-weight: 400;
-    letter-spacing: -.035em;
-  }
+    html {
+      color-scheme: dark;
+      min-width: 320px;
+      background: #030303;
+    }
 
-  ::selection { color: #050505; background: #e9e7df; }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: hsl(var(--foreground));
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background:
+        radial-gradient(
+          ellipse 80% 50% at 52% -18%,
+          rgba(229,9,20,.18),
+          transparent 64%
+        ),
+        radial-gradient(
+          ellipse 45% 36% at 100% 38%,
+          rgba(180,0,10,.09),
+          transparent 72%
+        ),
+        linear-gradient(
+          180deg,
+          #080000 0%,
+          #020000 53%,
+          #050000 100%
+        );
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
 
-  .topbar {
-    position: sticky; top: 0; z-index: 40;
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-    min-height: 4.1rem; padding: 0 clamp(1rem, 4vw, 2.5rem);
-    border-bottom: 1px solid hsl(var(--border));
-    background: rgba(3,3,3,0.94); backdrop-filter: blur(18px);
-  }
-
-  .brand { display: flex; align-items: center; gap: .78rem; color: inherit; text-decoration: none; }
-
-  .mark {
-    display: block; flex: 0 0 auto; width: 2.6rem; height: 2.6rem;
-    overflow: visible; background: transparent;
-    object-fit: contain; object-position: center; transform-origin: center;
-    user-select: none; -webkit-user-drag: none;
-    filter: drop-shadow(0 0 12px rgba(255,255,255,.045));
-  }
-
-  .mark-lg {
-    width: 9rem; height: 9rem; margin-bottom: 1.6rem;
-    filter: drop-shadow(0 0 32px rgba(255,255,255,.07));
-    animation: tsm-emblem-float 7s ease-in-out infinite;
-  }
-
-  @keyframes tsm-emblem-float {
-    0%, 100% { transform: translateY(0) scale(1); opacity: .94; }
-    50% { transform: translateY(-2px) scale(1.012); opacity: 1; }
-  }
-
-  .brand-name {
-    font-family: Georgia, &#34;Times New Roman&#34;, serif;
-    font-size: .88rem; font-style: italic; text-transform: uppercase; letter-spacing: -.015em;
-  }
-
-  .brand-sub {
-    margin-top: .18rem;
-    font-family: &#34;Courier New&#34;, Courier, monospace;
-    font-size: .5rem; font-weight: 700; letter-spacing: .28em; text-transform: uppercase;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .link {
-    display: inline-flex; align-items: center; gap: .5rem;
-    padding: .55rem .8rem; border: 1px solid transparent;
-    color: hsl(var(--muted-foreground)); text-decoration: none;
-    font-family: &#34;Courier New&#34;, Courier, monospace;
-    font-size: .58rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
-    transition: color 180ms ease, border-color 180ms ease, background-color 180ms ease;
-  }
-
-  .link:hover {
-    color: hsl(var(--foreground));
-    border-color: rgba(255,255,255,.07);
-    background: rgba(255,255,255,.025);
-  }
-
-  .page { position: relative; max-width: 34rem; margin: 0 auto; padding: 3rem 1rem 5rem; }
-
-  .page::before {
-    content: &#34;&#34;; position: fixed; top: 50%; left: 50%; z-index: -1;
-    width: min(92vw, 920px); aspect-ratio: 1;
-    border: 1px solid rgba(255,255,255,.052); border-radius: 50%;
-    transform: translate(-50%, -50%); pointer-events: none;
-    box-shadow: 0 0 0 74px rgba(255,255,255,.009), 0 0 0 148px rgba(255,255,255,.005);
-  }
-
-  .hero { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 2.25rem; }
-
-  .hero h1 {
-    max-width: 22rem;
-    font-size: clamp(2.35rem, 7vw, 3.6rem); font-style: italic; line-height: .92;
-    letter-spacing: -.065em; text-transform: uppercase;
-  }
-
-  .hero p {
-    max-width: 24rem; margin-top: .85rem;
-    font-family: Georgia, &#34;Times New Roman&#34;, serif; font-size: .9rem; line-height: 1.65;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .eyebrow {
-    display: inline-flex; align-items: center; gap: .5rem; margin-bottom: 1.1rem;
-    padding: .3rem .6rem; border: 1px solid hsl(var(--border));
-    font-family: &#34;Courier New&#34;, Courier, monospace;
-    font-size: .52rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .card {
-    position: relative; margin-bottom: 1rem; padding: 1.6rem;
-    border: 1px solid hsl(var(--border));
-    background:
-      linear-gradient(135deg, rgba(255,255,255,.016), transparent 38%),
-      hsl(var(--card) / .91);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.014), 0 24px 80px rgba(0,0,0,.15);
-    transition: border-color 220ms ease;
-  }
-
-  .card:hover { border-color: hsl(var(--foreground) / .2); }
-
-  .card::before, .card::after { content: &#34;&#34;; position: absolute; z-index: 3; width: 16px; height: 16px; pointer-events: none; }
-
-  .card::before { top: -1px; left: -1px; border-top: 1px solid hsl(var(--foreground) / .48); border-left: 1px solid hsl(var(--foreground) / .48); }
-
-  .card::after { right: -1px; bottom: -1px; border-right: 1px solid hsl(var(--foreground) / .25); border-bottom: 1px solid hsl(var(--foreground) / .25); }
-
-  .card-title {
-    display: flex; align-items: center; gap: 1rem; margin-bottom: 1.35rem;
-    font-family: &#34;Courier New&#34;, Courier, monospace;
-    font-size: .53rem; font-weight: 700; letter-spacing: .3em; text-transform: uppercase;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .card-title::after { content: &#34;&#34;; flex: 1; height: 1px; background: linear-gradient(90deg, hsl(var(--muted-foreground)), transparent); }
-
-  .label {
-    display: block; margin-bottom: .55rem;
-    font-family: &#34;Courier New&#34;, Courier, monospace;
-    font-size: .58rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
-    color: hsl(var(--foreground) / .9);
-  }
-
-  .phone-input {
-    display: block; width: 100%; min-height: 2.55rem; padding: .5rem .75rem;
-    border: 1px solid hsl(var(--input)); border-radius: 0;
-    background: hsl(var(--secondary) / .34);
-    color: hsl(var(--foreground)); font-family: inherit; font-size: .875rem;
-    box-shadow: inset 0 -1px 0 rgba(255,255,255,.023);
-    transition: border-color 180ms ease;
-  }
-
-  .phone-input::placeholder { color: hsl(var(--muted-foreground)); }
-
-  .phone-input:focus {
-    border-color: hsl(var(--foreground) / .54);
-    outline: none;
-    box-shadow: 0 0 0 1px hsl(var(--ring) / .5);
-  }
-
-  .turnstile-wrap { display: flex; justify-content: center; margin: 1rem 0; }
-
-  .btn {
-    position: relative; overflow: hidden;
-    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-    width: 100%; min-height: 2.55rem; padding: .5rem 1rem;
-    border: 1px solid hsl(var(--foreground)); border-radius: 0;
-    background: hsl(var(--foreground)); color: #050505;
-    font-family: &#34;Courier New&#34;, Courier, monospace;
-    font-size: .62rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
-    cursor: pointer; transition: background-color 200ms ease, color 200ms ease, opacity 200ms ease;
-  }
-
-  .btn::after {
-    content: &#34;&#34;; position: absolute; inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(0,0,0,.12), transparent);
-    transform: translateX(-120%); transition: transform 420ms ease;
-  }
-
-  .btn:hover:not(:disabled) { background: transparent; color: hsl(var(--foreground)); }
-  .btn:hover:not(:disabled)::after { transform: translateX(120%); }
-  .btn:disabled { opacity: .5; cursor: default; }
-  .btn-mt { margin-top: 1.2rem; }
-
-  .spin {
-    display: inline-block; width: 14px; height: 14px;
-    border: 1px solid currentColor; border-top-color: transparent; border-radius: 50%;
-    animation: rot .7s linear infinite;
-  }
-
-  @keyframes rot { to { transform: rotate(360deg); } }
-
-  .status-banner {
-    display: flex; align-items: center; gap: 1rem;
-    padding: 1rem; margin-bottom: 1.15rem;
-    border: 1px solid hsl(var(--border)); background: rgba(255,255,255,.014);
-  }
-
-  .status-banner.banned { border-color: hsl(var(--destructive) / .38); background: hsl(var(--destructive) / .07); }
-  .status-banner.active { border-color: hsl(var(--success) / .32); background: hsl(var(--success) / .06); }
-
-  .s-icon { flex: 0 0 auto; display: flex; }
-  .s-icon svg { width: 1.5rem; height: 1.5rem; }
-  .s-icon.banned { color: hsl(var(--destructive)); }
-  .s-icon.active { color: hsl(var(--success)); }
-
-  .s-title { font-family: &#34;Courier New&#34;, Courier, monospace; font-size: .82rem; font-weight: 700; letter-spacing: .08em; }
-
-  .s-sub { margin-top: .25rem; font-family: Georgia, &#34;Times New Roman&#34;, serif; font-size: .78rem; color: hsl(var(--muted-foreground)); }
-
-  .rows { display: flex; flex-direction: column; }
-
-  .row {
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-    padding: .7rem 0; border-bottom: 1px solid hsl(var(--border) / .72);
-  }
-
-  .row:first-child { border-top: 1px solid hsl(var(--border) / .72); }
-
-  .row-k {
-    font-family: &#34;Courier New&#34;, Courier, monospace;
-    font-size: .56rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .row-v { max-width: 62%; text-align: right; font-size: .82rem; }
-  .row-v.banned { color: hsl(var(--destructive)); }
-  .row-v.active { color: hsl(var(--success)); }
-
-  .hint {
-    margin-top: 1.15rem; text-align: center;
-    font-family: Georgia, &#34;Times New Roman&#34;, serif; font-size: .78rem; line-height: 1.6;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .error {
-    margin-top: .8rem; padding: .55rem .7rem;
-    border: 1px solid hsl(var(--destructive) / .35); background: hsl(var(--destructive) / .08);
-    color: hsl(var(--destructive));
-    font-family: &#34;Courier New&#34;, Courier, monospace; font-size: .58rem; letter-spacing: .08em; text-transform: uppercase;
-    text-align: center;
-  }
-
-  .hidden { display: none !important; }
-
-  footer {
-    position: relative; padding: 1.75rem 1rem; text-align: center;
-    border-top: 1px solid hsl(var(--border));
-    font-family: &#34;Courier New&#34;, Courier, monospace;
-    font-size: .53rem; font-weight: 700; letter-spacing: .28em; text-transform: uppercase;
-    color: hsl(var(--muted-foreground));
-  }
-
-  footer a { color: inherit; text-decoration: none; }
-  footer a:hover { color: hsl(var(--foreground)); }
-  footer .sep { opacity: .4; margin: 0 .55rem; }
-
-  @media (max-width: 767px) {
     body::before {
-      background: repeating-linear-gradient(90deg, transparent 0, transparent calc(25vw - 1px), rgba(255,255,255,0.02) calc(25vw - 1px), rgba(255,255,255,0.02) 25vw);
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      opacity: .4;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0,
+          transparent calc(12.5vw - 1px),
+          rgba(255,0,0,.035) calc(12.5vw - 1px),
+          rgba(255,0,0,.035) 12.5vw
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0,
+          transparent 120px,
+          rgba(255,0,0,.018) 120px,
+          rgba(255,0,0,.018) 121px
+        );
     }
-    .page { padding: 2rem 1rem 4rem; }
-    .card { padding: 1.35rem; }
-    .page::before { width: 115vw; }
-  }
 
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: .01ms !important; animation-iteration-count: 1 !important;
-      transition-duration: .01ms !important;
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      pointer-events: none;
+      opacity: .035;
+      mix-blend-mode: soft-light;
+      background:
+        repeating-radial-gradient(
+          circle at 19% 31%,
+          rgba(255,255,255,.92) 0,
+          rgba(255,255,255,.92) .4px,
+          transparent .7px,
+          transparent 4px
+        );
     }
-  }
-    </style>
-    <meta name="page-token" content="23b416670d7691c8a92b8509b5f6af3fd617625cb713d20df985436b0e721d44" />
-  </head>
-  <body>
-    <header class="topbar">
-      <a class="brand" href="/">
-        <img class="mark" src="/images/tsm-emblem.png" alt="" aria-hidden="true" draggable="false" decoding="async" />
-        <span>
-          <span class="brand-name">Dev Cifer</span>
-          <span class="brand-sub" style="display:block;">Free Check</span>
+
+    h1,
+    h2,
+    h3 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      letter-spacing: -.035em;
+    }
+
+    ::selection {
+      color: #fff;
+      background: var(--red);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 4.1rem;
+      padding: 0 clamp(1rem, 4vw, 2.5rem);
+      border-bottom: 1px solid rgba(229,9,20,.3);
+      background: rgba(3,0,0,.94);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 4px 30px rgba(120,0,0,.12);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .78rem;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .mark {
+      display: block;
+      flex: 0 0 auto;
+      width: 2.6rem;
+      height: 2.6rem;
+      overflow: hidden;
+      background: transparent;
+      object-fit: cover;
+      object-position: center;
+      user-select: none;
+      -webkit-user-drag: none;
+      filter:
+        drop-shadow(0 0 10px rgba(229,9,20,.3));
+    }
+
+    .mark-lg {
+      width: 9rem;
+      height: 9rem;
+      margin-bottom: 1.6rem;
+      border: 1px solid rgba(229,9,20,.5);
+      filter:
+        drop-shadow(0 0 32px rgba(229,9,20,.3));
+      animation: devcifer-float 7s ease-in-out infinite;
+    }
+
+    @keyframes devcifer-float {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+        opacity: .94;
+      }
+
+      50% {
+        transform: translateY(-2px) scale(1.012);
+        opacity: 1;
+      }
+    }
+
+    .brand-name {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: .88rem;
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: -.015em;
+      color: #fff;
+    }
+
+    .brand-sub {
+      margin-top: .18rem;
+      font-family: "Courier New", Courier, monospace;
+      font-size: .5rem;
+      font-weight: 700;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: #a66;
+    }
+
+    .link {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .55rem .8rem;
+      border: 1px solid transparent;
+      color: #a88;
+      text-decoration: none;
+      font-family: "Courier New", Courier, monospace;
+      font-size: .58rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      transition:
+        color 180ms ease,
+        border-color 180ms ease,
+        background-color 180ms ease;
+    }
+
+    .link:hover {
+      color: #fff;
+      border-color: rgba(229,9,20,.5);
+      background: rgba(229,9,20,.08);
+    }
+
+    .page {
+      position: relative;
+      max-width: 34rem;
+      margin: 0 auto;
+      padding: 3rem 1rem 5rem;
+    }
+
+    .page::before {
+      content: "";
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: -1;
+      width: min(92vw, 920px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(229,9,20,.12);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      box-shadow:
+        0 0 0 74px rgba(229,9,20,.018),
+        0 0 0 148px rgba(229,9,20,.009);
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 2.25rem;
+    }
+
+    .hero h1 {
+      max-width: 22rem;
+      font-size: clamp(2.35rem, 7vw, 3.6rem);
+      font-style: italic;
+      line-height: .92;
+      letter-spacing: -.065em;
+      text-transform: uppercase;
+      text-shadow: 0 0 25px rgba(229,9,20,.18);
+    }
+
+    .hero p {
+      max-width: 24rem;
+      margin-top: .85rem;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: .9rem;
+      line-height: 1.65;
+      color: #a88;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: 1.1rem;
+      padding: .3rem .6rem;
+      border: 1px solid rgba(229,9,20,.35);
+      font-family: "Courier New", Courier, monospace;
+      font-size: .52rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #b77;
+      background: rgba(229,9,20,.035);
+    }
+
+    .card {
+      position: relative;
+      margin-bottom: 1rem;
+      padding: 1.6rem;
+      border: 1px solid rgba(229,9,20,.25);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(229,9,20,.035),
+          transparent 38%
+        ),
+        rgba(8,2,2,.94);
+      box-shadow:
+        inset 0 1px 0 rgba(255,0,0,.03),
+        0 24px 80px rgba(0,0,0,.4),
+        0 0 40px rgba(100,0,0,.06);
+      transition: border-color 220ms ease;
+    }
+
+    .card:hover {
+      border-color: rgba(229,9,20,.55);
+    }
+
+    .card::before,
+    .card::after {
+      content: "";
+      position: absolute;
+      z-index: 3;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+    }
+
+    .card::before {
+      top: -1px;
+      left: -1px;
+      border-top: 1px solid rgba(229,9,20,.8);
+      border-left: 1px solid rgba(229,9,20,.8);
+    }
+
+    .card::after {
+      right: -1px;
+      bottom: -1px;
+      border-right: 1px solid rgba(229,9,20,.5);
+      border-bottom: 1px solid rgba(229,9,20,.5);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.35rem;
+      font-family: "Courier New", Courier, monospace;
+      font-size: .53rem;
+      font-weight: 700;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: #a88;
+    }
+
+    .card-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background:
+        linear-gradient(
+          90deg,
+          #a33,
+          transparent
+        );
+    }
+
+    .label {
+      display: block;
+      margin-bottom: .55rem;
+      font-family: "Courier New", Courier, monospace;
+      font-size: .58rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #eee;
+    }
+
+    .phone-input {
+      display: block;
+      width: 100%;
+      min-height: 2.55rem;
+      padding: .5rem .75rem;
+      border: 1px solid rgba(229,9,20,.3);
+      border-radius: 0;
+      background: rgba(20,0,0,.45);
+      color: #fff;
+      font-family: inherit;
+      font-size: .875rem;
+      box-shadow: inset 0 -1px 0 rgba(255,0,0,.04);
+      transition: border-color 180ms ease;
+    }
+
+    .phone-input::placeholder {
+      color: #765;
+    }
+
+    .phone-input:focus {
+      border-color: var(--red);
+      outline: none;
+      box-shadow:
+        0 0 0 1px rgba(229,9,20,.45),
+        0 0 18px rgba(229,9,20,.12);
+    }
+
+    .turnstile-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .btn {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      width: 100%;
+      min-height: 2.55rem;
+      padding: .5rem 1rem;
+      border: 1px solid var(--red);
+      border-radius: 0;
+      background: var(--red);
+      color: #fff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition:
+        background-color 200ms ease,
+        color 200ms ease,
+        opacity 200ms ease,
+        box-shadow 200ms ease;
+      box-shadow: 0 0 18px rgba(229,9,20,.15);
+    }
+
+    .btn:hover:not(:disabled) {
+      background: #ff1722;
+      color: #fff;
+      box-shadow: 0 0 28px rgba(229,9,20,.28);
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: default;
+    }
+
+    .btn-mt {
+      margin-top: 1.2rem;
+    }
+
+    .spin {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 1px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: rot .7s linear infinite;
+    }
+
+    @keyframes rot {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .status-banner {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      margin-bottom: 1.15rem;
+      border: 1px solid rgba(229,9,20,.25);
+      background: rgba(255,255,255,.014);
+    }
+
+    .status-banner.banned {
+      border-color: rgba(229,9,20,.85);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(229,9,20,.16),
+          rgba(60,0,0,.18)
+        );
+      box-shadow:
+        0 0 25px rgba(229,9,20,.1),
+        inset 0 0 30px rgba(229,9,20,.035);
+    }
+
+    .status-banner.active {
+      border-color: rgba(45,180,55,.5);
+      background: rgba(20,80,20,.08);
+    }
+
+    .s-icon {
+      flex: 0 0 auto;
+      display: flex;
+    }
+
+    .s-icon svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .s-icon.banned {
+      color: var(--red);
+      filter: drop-shadow(0 0 8px rgba(229,9,20,.5));
+    }
+
+    .s-icon.active {
+      color: #49c957;
+    }
+
+    .s-title {
+      font-family: "Courier New", Courier, monospace;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .s-sub {
+      margin-top: .25rem;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: .78rem;
+      color: #b99;
+    }
+
+    .status-banner.banned .s-title {
+      color: #ff2731;
+    }
+
+    .status-banner.banned .s-sub {
+      color: #d88;
+      font-weight: 700;
+    }
+
+    .rows {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .7rem 0;
+      border-bottom: 1px solid rgba(229,9,20,.15);
+    }
+
+    .row:first-child {
+      border-top: 1px solid rgba(229,9,20,.15);
+    }
+
+    .row-k {
+      font-family: "Courier New", Courier, monospace;
+      font-size: .56rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #977;
+    }
+
+    .row-v {
+      max-width: 62%;
+      text-align: right;
+      font-size: .82rem;
+    }
+
+    .row-v.banned {
+      color: #ff2630;
+      font-weight: 700;
+    }
+
+    .row-v.active {
+      color: #49c957;
+      font-weight: 700;
+    }
+
+    .hint {
+      margin-top: 1.15rem;
+      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: .78rem;
+      line-height: 1.6;
+      color: #977;
+    }
+
+    .error {
+      margin-top: .8rem;
+      padding: .55rem .7rem;
+      border: 1px solid rgba(229,9,20,.55);
+      background: rgba(229,9,20,.1);
+      color: #ff3841;
+      font-family: "Courier New", Courier, monospace;
+      font-size: .58rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    footer {
+      position: relative;
+      padding: 1.75rem 1rem;
+      text-align: center;
+      border-top: 1px solid rgba(229,9,20,.25);
+      font-family: "Courier New", Courier, monospace;
+      font-size: .53rem;
+      font-weight: 700;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: #866;
+    }
+
+    footer a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: #fff;
+    }
+
+    footer .sep {
+      opacity: .4;
+      margin: 0 .55rem;
+    }
+
+    @media (max-width: 767px) {
+      body::before {
+        background:
+          repeating-linear-gradient(
+            90deg,
+            transparent 0,
+            transparent calc(25vw - 1px),
+            rgba(255,0,0,.025) calc(25vw - 1px),
+            rgba(255,0,0,.025) 25vw
+          );
+      }
+
+      .page {
+        padding: 2rem 1rem 4rem;
+      }
+
+      .card {
+        padding: 1.35rem;
+      }
+
+      .page::before {
+        width: 115vw;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+
+  <meta
+    name="page-token"
+    content="23b416670d7691c8a92b8509b5f6af3fd617625cb713d20df985436b0e721d44"
+  />
+</head>
+
+<body>
+
+  <header class="topbar">
+
+    <a class="brand" href="/">
+
+      <img
+        class="mark"
+        src="/images/dev-cifer.jpg"
+        alt="Dev Cifer"
+        draggable="false"
+        decoding="async"
+      />
+
+      <span>
+        <span class="brand-name">Dev Cifer</span>
+        <span
+          class="brand-sub"
+          style="display:block;"
+        >
+          Free Check
         </span>
-      </a>
-      <a class="link" href="/panel">Panel</a>
-    </header>
+      </span>
 
-    <div class="page">
-      <div class="hero">
-        <img class="mark mark-lg" src="/images/tsm-emblem.png" alt="" aria-hidden="true" draggable="false" loading="eager" decoding="async" />
-        <span class="eyebrow">Free forever</span>
-        <h1>Free Ban Check</h1>
-        <p>
-          Check any WhatsApp number in seconds. Status, the time it was checked, and the ban reason — nothing else.
-        </p>
-      </div>
+    </a>
 
-      <div class="card" id="step-input">
-        <div class="card-title">Check number</div>
-        <label class="label" for="phone-input">Phone number</label>
-        <input type="tel" id="phone-input" class="phone-input" placeholder="+49123456789 or 0151..." />
+    <a class="link" href="/panel">
+      Panel
+    </a>
 
-        <div class="turnstile-wrap" id="ts-wrap">
-          <div class="cf-turnstile" data-sitekey="0x4AAAAAADnq7lsJ0xLVIRQ9" data-theme="dark"></div>
-        </div>
+  </header>
 
-        <button id="check-btn" class="btn btn-mt">Check ban status</button>
+  <div class="page">
 
-        <div id="check-error" class="error hidden"></div>
-      </div>
+    <div class="hero">
 
-      <div class="card hidden" id="step-result">
-        <div class="card-title">Result</div>
-        <div id="result-banner"></div>
+      <img
+        class="mark mark-lg"
+        src="/images/dev-cifer.jpg"
+        alt="Dev Cifer"
+        draggable="false"
+        loading="eager"
+        decoding="async"
+      />
 
-        <div class="rows">
-          <div class="row">
-            <span class="row-k">Status</span>
-            <span class="row-v" id="r-status">—</span>
-          </div>
+      <span class="eyebrow">
+        Free forever
+      </span>
 
-          <div class="row">
-            <span class="row-k">Reason</span>
-            <span class="row-v" id="r-reason">—</span>
-          </div>
+      <h1>
+        Free Ban Check
+      </h1>
 
-          <div class="row">
-            <span class="row-k">Ban time</span>
-            <span class="row-v" id="r-bantime">—</span>
-          </div>
+      <p>
+        Check any WhatsApp number in seconds.
+        Status, the time it was checked,
+        and the ban reason — nothing else.
+      </p>
 
-          <div class="row">
-            <span class="row-k">Appeal time</span>
-            <span class="row-v" id="r-appealtime">—</span>
-          </div>
-        </div>
-
-        <div class="hint">
-          100% free, forever. No signup required.
-        </div>
-
-        <button id="again-btn" class="btn btn-mt">
-          Check another number
-        </button>
-      </div>
     </div>
 
-    <footer>
-      © 2026 Dev Cifer
-      <span class="sep">·</span>
-      <a href="https://t.me/wegschleifen" target="_blank" rel="noreferrer">Telegram</a>
-    </footer>
+    <div class="card" id="step-input">
 
-    <script>
-      // Turnstile: skip locally, load the widget script in prod.
-      if (['localhost', '127.0.0.1'].includes(location.hostname)) {
-        document.querySelectorAll('.cf-turnstile, #ts-wrap').forEach(el => el.remove());
-      }
-    </script>
+      <div class="card-title">
+        Check number
+      </div>
 
-    <script>
-      if (!['localhost','127.0.0.1'].includes(location.hostname)) {
-        document.write('<scr'+'ipt src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer><\/scr'+'ipt>');
-      }
-    </script>
+      <label
+        class="label"
+        for="phone-input"
+      >
+        Phone number
+      </label>
 
-    <script>
-      (function () {
-        const $ = (id) => document.getElementById(id);
-        const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
+      <input
+        type="tel"
+        id="phone-input"
+        class="phone-input"
+        placeholder="+49123456789 or 0151..."
+        autocomplete="tel"
+      />
 
-        function normalize(num) {
-          if (!num) return null;
-          num = num.trim().replace(/[^\d+]/g, '').replace(/\+/g, '');
-          if (!num) return null;
-          if (num.startsWith('0')) num = '49' + num.slice(1);
-          return '+' + num;
-        }
+      <div
+        class="turnstile-wrap"
+        id="ts-wrap"
+      >
+        <div
+          class="cf-turnstile"
+          data-sitekey="0x4AAAAAADnq7lsJ0xLVIRQ9"
+          data-theme="dark"
+        ></div>
+      </div>
 
-        function isValid(num) {
-          const n = normalize(num);
-          return !!n && /^\+\d{7,}$/.test(n);
-        }
+      <button
+        id="check-btn"
+        class="btn btn-mt"
+      >
+        Check ban status
+      </button>
 
-        function showError(msg) {
-          const el = $('check-error');
-          el.textContent = msg;
-          el.classList.remove('hidden');
-        }
+      <div
+        id="check-error"
+        class="error hidden"
+      ></div>
 
-        function clearError() {
-          $('check-error').classList.add('hidden');
-        }
+    </div>
 
-        async function getToken() {
-          let tk = document.querySelector('meta[name="page-token"]')?.content || '';
-          if (!tk) {
-            try {
-              tk = (await fetch('/api/get-token').then(r => r.json())).token || '';
-            } catch {}
-          }
-          return tk;
-        }
+    <div
+      class="card hidden"
+      id="step-result"
+    >
 
-        function fmtTs(unix) {
-          return unix ? new Date(unix * 1000).toLocaleString() : '—';
-        }
+      <div class="card-title">
+        Result
+      </div>
 
-        function render(number, d) {
-          const banned = !!d.banned;
-          const modBan = !!d.mod_ban;
-          const reason = d.violation_label || d.violation_reason || d.reason || '';
+      <div id="result-banner"></div>
 
-          const svg = (paths) =>
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" ' +
-            'stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
+      <div class="rows">
 
-          const ICON_BAN = svg('<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>');
-          const ICON_OK = svg('<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>');
+        <div class="row">
+          <span class="row-k">Status</span>
+          <span
+            class="row-v"
+            id="r-status"
+          >
+            —
+          </span>
+        </div>
 
-          const banner = $('result-banner');
+        <div class="row">
+          <span class="row-k">Reason</span>
+          <span
+            class="row-v"
+            id="r-reason"
+          >
+            —
+          </span>
+        </div>
 
-          if (banned || modBan) {
-            banner.className = 'status-banner banned';
-            banner.innerHTML =
-              '<div class="s-icon banned">' + ICON_BAN + '</div>' +
-              '<div><div class="s-title">' + number + '</div>' +
-              '<div class="s-sub">This number is banned from WhatsApp.</div></div>';
-          } else {
-            banner.className = 'status-banner active';
-            banner.innerHTML =
-              '<div class="s-icon active">' + ICON_OK + '</div>' +
-              '<div><div class="s-title">' + number + '</div>' +
-              '<div class="s-sub">This number is not banned.</div></div>';
-          }
+        <div class="row">
+          <span class="row-k">Ban time</span>
+          <span
+            class="row-v"
+            id="r-bantime"
+          >
+            —
+          </span>
+        </div>
 
-          const st = $('r-status');
-          st.textContent = (banned || modBan) ? 'Banned' : 'Not banned';
-          st.className = 'row-v ' + ((banned || modBan) ? 'banned' : 'active');
+        <div class="row">
+          <span class="row-k">Appeal time</span>
+          <span
+            class="row-v"
+            id="r-appealtime"
+          >
+            —
+          </span>
+        </div>
 
-          $('r-reason').textContent = (banned || modBan) ? (reason || 'Not specified') : '—';
-          $('r-bantime').textContent = '—';
-          $('r-appealtime').textContent = '—';
+      </div>
 
-          $('step-input').classList.add('hidden');
-          $('step-result').classList.remove('hidden');
+      <div class="hint">
+        100% free, forever. No signup required.
+      </div>
 
-          if (banned || modBan) fetchTimes(number);
-        }
+      <button
+        id="again-btn"
+        class="btn btn-mt"
+      >
+        Check another number
+      </button>
 
-        async function fetchTimes(number) {
-          $('r-bantime').innerHTML = '<span class="spin"></span>';
-          $('r-appealtime').innerHTML = '<span class="spin"></span>';
+    </div>
+
+  </div>
+
+  <footer>
+
+    © 2026 Dev Cifer
+
+    <span class="sep">
+      ·
+    </span>
+
+    <a
+      href="https://t.me/devcifer"
+      target="_blank"
+      rel="noreferrer"
+    >
+      Telegram
+    </a>
+
+  </footer>
+
+  <!-- Cloudflare Turnstile -->
+  <script>
+    if (
+      ["localhost", "127.0.0.1"]
+      .includes(location.hostname)
+    ) {
+      document
+        .querySelectorAll(".cf-turnstile, #ts-wrap")
+        .forEach(el => el.remove());
+    }
+  </script>
+
+  <script>
+    if (
+      !["localhost", "127.0.0.1"]
+      .includes(location.hostname)
+    ) {
+      document.write(
+        '<scr' +
+        'ipt src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer><\/scr' +
+        'ipt>'
+      );
+    }
+  </script>
+
+  <!-- Ban checker -->
+  <script>
+    (function () {
+
+      const $ = (id) =>
+        document.getElementById(id);
+
+      const isLocal =
+        ["localhost", "127.0.0.1"]
+        .includes(location.hostname);
+
+      async function getToken() {
+
+        let token =
+          document.querySelector(
+            'meta[name="page-token"]'
+          )?.content || "";
+
+        if (!token) {
 
           try {
-            const tk = await getToken();
 
-            const res = await fetch('/api/appeal/status', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-Page-Token': tk
-              },
-              body: JSON.stringify({ phone: number }),
-            });
+            const response =
+              await fetch(
+                "/api/get-token",
+                {
+                  headers: {
+                    "Accept":
+                      "application/json"
+                  }
+                }
+              );
 
-            const d = await res.json().catch(() => ({}));
+            const data =
+              await response.json();
 
-            if (!res.ok) {
-              $('r-bantime').textContent = '—';
-              $('r-appealtime').textContent = '—';
-              return;
-            }
+            token =
+              data.token || "";
 
-            $('r-bantime').textContent = fmtTs(d.ban_time);
-            $('r-appealtime').textContent = fmtTs(d.appeal_creation_time);
+          } catch {}
+        }
+
+        return token;
+      }
+
+      function normalize(number) {
+
+        if (!number)
+          return null;
+
+        number =
+          number
+            .trim()
+            .replace(/[^\d+]/g, "")
+            .replace(/\+/g, "");
+
+        if (!number)
+          return null;
+
+        if (
+          number.startsWith("0")
+        ) {
+          number =
+            "49" +
+            number.slice(1);
+        }
+
+        return "+" + number;
+      }
+
+      function isValid(number) {
+
+        const normalized =
+          normalize(number);
+
+        return (
+          !!normalized &&
+          /^\+\d{7,15}$/
+          .test(normalized)
+        );
+      }
+
+      function showError(message) {
+
+        const element =
+          $("check-error");
+
+        element.textContent =
+          message;
+
+        element.classList.remove(
+          "hidden"
+        );
+      }
+
+      function clearError() {
+
+        $("check-error")
+          .classList.add(
+            "hidden"
+          );
+      }
+
+      function isBanned(data) {
+
+        return (
+          data?.banned === true ||
+          data?.banned === 1 ||
+          data?.banned === "true" ||
+          data?.banned === "1" ||
+
+          data?.mod_ban === true ||
+          data?.mod_ban === 1 ||
+          data?.mod_ban === "true" ||
+          data?.mod_ban === "1"
+        );
+      }
+
+      function render(number, response) {
+
+        const data =
+          response?.data ||
+          response?.result ||
+          response ||
+          {};
+
+        const banned =
+          isBanned(data);
+
+        const reason =
+          data.violation_label ||
+          data.violation_reason ||
+          data.reason ||
+          data.ban_reason ||
+          "";
+
+        const banner =
+          $("result-banner");
+
+        const ICON_BAN =
+          '<svg viewBox="0 0 24 24" ' +
+          'fill="none" ' +
+          'stroke="currentColor" ' +
+          'stroke-width="1.5" ' +
+          'stroke-linecap="round" ' +
+          'stroke-linejoin="round">' +
+          '<circle cx="12" cy="12" r="10"/>' +
+          '<path d="m4.9 4.9 14.2 14.2"/>' +
+          '</svg>';
+
+        const ICON_OK =
+          '<svg viewBox="0 0 24 24" ' +
+          'fill="none" ' +
+          'stroke="currentColor" ' +
+          'stroke-width="1.5" ' +
+          'stroke-linecap="round" ' +
+          'stroke-linejoin="round">' +
+          '<circle cx="12" cy="12" r="10"/>' +
+          '<path d="m9 12 2 2 4-4"/>' +
+          '</svg>';
+
+        if (banned) {
+
+          banner.className =
+            "status-banner banned";
+
+          banner.innerHTML =
+            '<div class="s-icon banned">' +
+              ICON_BAN +
+            '</div>' +
+
+            '<div>' +
+
+              '<div class="s-title">' +
+                number +
+              '</div>' +
+
+              '<div class="s-sub">' +
+                'This number ban by Cifer' +
+              '</div>' +
+
+            '</div>';
+
+          $("r-status").textContent =
+            "Banned";
+
+          $("r-status").className =
+            "row-v banned";
+
+          $("r-reason").textContent =
+            reason ||
+            "Not specified";
+
+          $("r-bantime").textContent =
+            data.ban_time
+              ? new Date(
+                  Number(data.ban_time) * 1000
+                ).toLocaleString()
+              : "—";
+
+          $("r-appealtime").textContent =
+            data.appeal_creation_time
+              ? new Date(
+                  Number(
+                    data.appeal_creation_time
+                  ) * 1000
+                ).toLocaleString()
+              : "—";
+
+        } else {
+
+          banner.className =
+            "status-banner active";
+
+          banner.innerHTML =
+            '<div class="s-icon active">' +
+              ICON_OK +
+            '</div>' +
+
+            '<div>' +
+
+              '<div class="s-title">' +
+                number +
+              '</div>' +
+
+              '<div class="s-sub">' +
+                'This number is not banned.' +
+              '</div>' +
+
+            '</div>';
+
+          $("r-status").textContent =
+            "Not banned";
+
+          $("r-status").className =
+            "row-v active";
+
+          $("r-reason").textContent =
+            "—";
+
+          $("r-bantime").textContent =
+            "—";
+
+          $("r-appealtime").textContent =
+            "—";
+        }
+
+        $("step-input")
+          .classList.add(
+            "hidden"
+          );
+
+        $("step-result")
+          .classList.remove(
+            "hidden"
+          );
+      }
+
+      async function check() {
+
+        clearError();
+
+        let number =
+          $("phone-input")
+          .value
+          .trim();
+
+        if (!number) {
+
+          showError(
+            "Please enter a phone number."
+          );
+
+          return;
+        }
+
+        if (!isValid(number)) {
+
+          showError(
+            "Please enter a valid phone number."
+          );
+
+          return;
+        }
+
+        number =
+          normalize(number);
+
+        const captchaToken =
+          isLocal
+            ? ""
+            : (
+                document.querySelector(
+                  'input[name="cf-turnstile-response"]'
+                )?.value || ""
+              );
+
+        if (
+          !isLocal &&
+          !captchaToken
+        ) {
+
+          showError(
+            "Please complete the captcha first."
+          );
+
+          return;
+        }
+
+        const button =
+          $("check-btn");
+
+        const original =
+          button.innerHTML;
+
+        button.disabled =
+          true;
+
+        button.innerHTML =
+          '<span class="spin"></span> Checking...';
+
+        try {
+
+          const pageToken =
+            await getToken();
+
+          const response =
+            await fetch(
+              "/check-numberr2",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json",
+
+                  "Cache-Control":
+                    "no-cache",
+
+                  "X-Page-Token":
+                    pageToken
+                },
+
+                body:
+                  JSON.stringify({
+                    number:
+                      number,
+
+                    "cf-turnstile-response":
+                      captchaToken
+                  })
+              }
+            );
+
+          const text =
+            await response.text();
+
+          let data;
+
+          try {
+
+            data =
+              JSON.parse(text);
+
           } catch {
-            $('r-bantime').textContent = '—';
-            $('r-appealtime').textContent = '—';
-          }
-        }
 
-        async function check() {
-          clearError();
+            showError(
+              "Invalid response from server."
+            );
 
-          let number = $('phone-input').value.trim();
-
-          if (!number) {
-            showError('Please enter a phone number.');
             return;
           }
 
-          if (!isValid(number)) {
-            showError('Please enter a valid number, e.g. +49123456789 or 0123456789.');
+          if (!response.ok) {
+
+            showError(
+              data?.error ||
+              data?.message ||
+              ("Server error " +
+               response.status)
+            );
+
             return;
           }
 
-          number = normalize(number);
+          render(
+            number,
+            data
+          );
 
-          const ct = isLocal
-            ? ''
-            : (document.querySelector('input[name="cf-turnstile-response"]')?.value || '');
+        } catch (error) {
 
-          if (!isLocal && !ct) {
-            showError('Please complete the captcha first.');
-            return;
-          }
+          showError(
+            "Network error: " +
+            (
+              error?.message ||
+              "Unable to contact server."
+            )
+          );
 
-          const btn = $('check-btn');
-          const original = btn.innerHTML;
+        } finally {
 
-          btn.disabled = true;
-          btn.innerHTML = '<span class="spin"></span> Checking...';
+          button.disabled =
+            false;
 
-          try {
-            const tk = await getToken();
+          button.innerHTML =
+            original;
 
-            const res = await fetch('/check-numberr2', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache',
-                'X-Page-Token': tk,
-              },
-              body: JSON.stringify({
-                number: number,
-                'cf-turnstile-response': ct
-              }),
-            });
+          if (
+            window.turnstile
+          ) {
 
-            const text = await res.text();
-
-            let d;
-
-            try {
-              d = JSON.parse(text);
-            } catch {
-              showError('Server error ' + res.status);
-              return;
-            }
-
-            if (!res.ok) {
-              showError(d?.error || ('Error ' + res.status));
-              return;
-            }
-
-            render(number, d);
-
-          } catch (err) {
-            showError('Network error: ' + err.message);
-          } finally {
-            btn.disabled = false;
-            btn.innerHTML = original;
-
-            if (window.turnstile) {
-              window.turnstile.reset();
-            }
+            window.turnstile.reset();
           }
         }
+      }
 
-        $('check-btn').addEventListener('click', check);
+      $("check-btn")
+        .addEventListener(
+          "click",
+          check
+        );
 
-        $('phone-input').addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') check();
-        });
+      $("phone-input")
+        .addEventListener(
+          "keydown",
+          function (event) {
 
-        $('again-btn').addEventListener('click', () => {
-          $('step-result').classList.add('hidden');
-          $('step-input').classList.remove('hidden');
-          $('phone-input').value = '';
-          $('phone-input').focus();
-        });
-      })();
-    </script>
-
-    <script>
-      (function(){
-        function c(){
-          var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);
-          if(b){
-            var d=b.createElement('script');
-            d.innerHTML="window.__CF$cv$params={r:'a3a3380bdb07343e',t:'MTc4OTI2MTI2Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
-            b.getElementsByTagName('head')[0].appendChild(d)
-          }
-        }
-
-        if(document.body){
-          var a=document.createElement('iframe');
-          a.height=1;
-          a.width=1;
-          a.style.position='absolute';
-          a.style.top=0;
-          a.style.left=0;
-          a.style.border='none';
-          a.style.visibility='hidden';
-          document.body.appendChild(a);
-
-          if('loading'!==document.readyState)c();
-          else if(window.addEventListener)
-            document.addEventListener('DOMContentLoaded',c);
-          else{
-            var e=document.onreadystatechange||function(){};
-            document.onreadystatechange=function(b){
-              e(b);
-              'loading'!==document.readyState&&(document.onreadystatechange=e,c())
+            if (
+              event.key === "Enter"
+            ) {
+              check();
             }
           }
-        }
-      })();
-    </script>
-  </body>
+        );
+
+      $("again-btn")
+        .addEventListener(
+          "click",
+          function () {
+
+            $("step-result")
+              .classList.add(
+                "hidden"
+              );
+
+            $("step-input")
+              .classList.remove(
+                "hidden"
+              );
+
+            $("phone-input")
+              .value = "";
+
+            clearError();
+
+            $("phone-input")
+              .focus();
+          }
+        );
+
+    })();
+  </script>
+
+</body>
 </html>
